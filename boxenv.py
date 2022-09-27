@@ -23,6 +23,7 @@ class BoxEnv:
 
         # Get scale for plotting
         # TODO: this doesn't work with rotated boxes
+        # allow diagonal boxes
         padding = 5
         min_x = min(min(b.A.x, b.B.x, b.C.x) for b in boxes)
         max_x = max(max(b.A.x, b.B.x, b.C.x) for b in boxes)

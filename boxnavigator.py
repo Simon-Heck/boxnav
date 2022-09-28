@@ -42,7 +42,7 @@ class BoxNavigatorBase:
     """
 
     def __init__(
-        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool
+        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool = False
     ) -> None:
         """Initialize member variables for any navigator.
 

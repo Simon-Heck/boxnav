@@ -1,3 +1,5 @@
+import math
+from navigatorUnrealWrapper import NavigatorUnrealWrapper
 from box import Box, Pt
 from boxenv import BoxEnv
 from boxnavigator import PerfectNavigator, WanderingNavigator, Action
@@ -22,7 +24,8 @@ def simulate():
     env = BoxEnv(boxes)
 
     agent_position = Pt(2, 2)
-    agent_rotation = 0
+    agent_rotation = math.radians(90)
+    # 180 minus script rotaion is unreal rotation
 
     if args.navigator == "wandering":
         agent = WanderingNavigator(
@@ -34,7 +37,10 @@ def simulate():
         )
     else:
         raise ValueError("Invalid argument error (check code for options).")
-
+    if args.ue:
+        navUnrealWrapper = NavigatorUnrealWrapper(agent, 8500)
+    else:
+        navUnrealWrapper = None
     fig, ax = plt.subplots()
     camera = Camera(fig)
 

@@ -47,7 +47,7 @@ def simulate():
     # ue5 = UE5Wrapper()
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 200
+    max_actions_to_take = 2
     num_actions_taken = 0
 
     while not agent.at_final_target():

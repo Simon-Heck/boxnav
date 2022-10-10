@@ -48,12 +48,13 @@ class BoxNavigatorBase:
 
         Args:
             position (Pt): initial position
-            rotation (float): initial rotation
+            rotation (float): initial rotation in radians
             env (BoxEnv): box environment
         """
         self.env = env
         self.position = position
         self.rotation = rotation
+
         self.allow_out_of_bounds = out_of_bounds
 
         self.target = self.env.boxes[0].target

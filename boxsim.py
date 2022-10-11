@@ -25,7 +25,7 @@ def simulate():
 
     agent_position = Pt(2, 2)
     agent_rotation = math.radians(90)
-    # 180 minus script rotaion is unreal rotation
+    # 180 minus script rotation is unreal rotation
 
     if args.navigator == "wandering":
         agent = WanderingNavigator(
@@ -44,23 +44,21 @@ def simulate():
     fig, ax = plt.subplots()
     camera = Camera(fig)
 
-    # ue5 = UE5Wrapper()
-
     # TODO: turn into CLI argument
-    max_actions_to_take = 2
+    max_actions_to_take = 20
     num_actions_taken = 0
 
     while not agent.at_final_target():
-        action_taken, correct_action = agent.take_action()
 
-        # if action_taken == Action.FORWARD:
-        #     ue5.forward(agent.translation_increment)
-        # else:
-        #     raise NotImplemented
-
-        # agent.update_position()
-
-        # TODO: use "correct_action" to label the image
+        if navUnrealWrapper is not None:
+            if agent.isOutOfBounds:
+                navUnrealWrapper.syncBoxPositionToUnreal(agent)
+            else:
+                navUnrealWrapper.syncUnrealPositionToBox(agent)
+                # TODO Some kind of corrective action?
+            action_taken, correct_action = agent.take_action()
+            navUnrealWrapper.takeAction(action_taken, agent)
+        # Sync position in case Unreal Agent hits a wall and cannot move
 
         env.display(ax)
         agent.display(ax, env.scale)

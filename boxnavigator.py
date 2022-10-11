@@ -58,6 +58,8 @@ class BoxNavigatorBase:
         self.allow_out_of_bounds = out_of_bounds
 
         self.target = self.env.boxes[0].target
+        # experimental:
+        self.isOutOfBounds = False
 
         # TODO: change from wedge to field-of-view?
         self.half_target_wedge = radians(5)
@@ -65,7 +67,7 @@ class BoxNavigatorBase:
         # How much a navigator should translate or rotate in a given step
         # of the simulation. These are fairly arbitrary.
         self.distance_threshold = 15
-        self.translation_increment = 10
+        self.translation_increment = 100
         self.rotation_increment = radians(5)
 
     def at_final_target(self) -> bool:
@@ -111,24 +113,12 @@ class BoxNavigatorBase:
 
         if action_taken == Action.FORWARD:
             self.move_forward()
-            # self.sync_position_with_unreal()
-            # "vget /camera/0/location"
-            # update self.position
-            # TODO: only sync when it is possible that we went out of bounds?
-            # TODO: should we have a member parameter that turns syncing off?
-            #       because we probably won't need to with the perfect navigator
-
         elif action_taken == Action.ROTATE_LEFT:
             self.rotate_left()
         elif action_taken == Action.ROTATE_RIGHT:
             self.rotate_right()
         else:
             self.move_backward()
-            # self.sync_position_with_unreal()
-            # "vget /camera/0/location"
-            # update self.position
-
-        # Sync rotation every so many steps?
 
         return action_taken, correct_action
 
@@ -171,9 +161,11 @@ class BoxNavigatorBase:
 
         if self.allow_out_of_bounds or self.env.get_boxes(new_pt):
             self.position = new_pt
+            self.isOutOfBounds = False
         else:
+            self.isOutOfBounds = True
             # TODO: project to boundary?
-            raise NotImplementedError("Projecting to boundary is not implemented.")
+            # raise NotImplementedError("Projecting to boundary is not implemented.")
 
     def rotate_right(self) -> None:
         """Rotate to the right by a set amount."""
@@ -216,7 +208,7 @@ class PerfectNavigator(BoxNavigatorBase):
             rotation (float): Initial rotation of the navigator
             env (BoxEnv): Box Environment navigator will operate in
         """
-        super().__init__(position, rotation, env)
+        super().__init__(position, rotation, env, out_of_bounds)
 
     def navigator_specific_action(self) -> Action:
         """The perfect navigator always chooses the correct action."""

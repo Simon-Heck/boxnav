@@ -6,6 +6,7 @@ from box import Box, Pt
 
 class NavigatorUnrealWrapper:
     # ue5: UE5EnvWrapper = None
+    # this is a wrapper
 
     def __init__(self, navigator: BoxNavigatorBase, port: int = 8500) -> None:
         self.ue5 = UE5EnvWrapper(port)

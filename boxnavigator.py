@@ -66,8 +66,8 @@ class BoxNavigatorBase:
 
         # How much a navigator should translate or rotate in a given step
         # of the simulation. These are fairly arbitrary.
-        self.distance_threshold = 15
-        self.translation_increment = 100
+        self.distance_threshold = 200
+        self.translation_increment = 50
         self.rotation_increment = radians(5)
 
     def at_final_target(self) -> bool:

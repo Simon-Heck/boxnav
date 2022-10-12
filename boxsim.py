@@ -23,7 +23,7 @@ def simulate():
     """Create and update the box environment and run the navigator."""
     env = BoxEnv(boxes)
 
-    agent_position = Pt(2, 2)
+    agent_position = Pt(0, 0)
     agent_rotation = math.radians(90)
     # 180 minus script rotation is unreal rotation
 
@@ -37,27 +37,28 @@ def simulate():
         )
     else:
         raise ValueError("Invalid argument error (check code for options).")
+
     if args.ue:
-        navUnrealWrapper = NavigatorUnrealWrapper(agent, 8500)
-    else:
-        navUnrealWrapper = None
+        agent = NavigatorUnrealWrapper(agent, 8500)
+    # else:
+    #     navUnrealWrapper = None
     fig, ax = plt.subplots()
     camera = Camera(fig)
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 20
+    max_actions_to_take = 25
     num_actions_taken = 0
 
     while not agent.at_final_target():
 
-        if navUnrealWrapper is not None:
-            if agent.isOutOfBounds:
-                navUnrealWrapper.syncBoxPositionToUnreal(agent)
-            else:
-                navUnrealWrapper.syncUnrealPositionToBox(agent)
-                # TODO Some kind of corrective action?
-            action_taken, correct_action = agent.take_action()
-            navUnrealWrapper.takeAction(action_taken, agent)
+        # if navUnrealWrapper is not None:
+        # if agent.isOutOfBounds:
+        #     navUnrealWrapper.syncBoxPositionToUnreal(agent)
+        # else:
+        #     navUnrealWrapper.syncUnrealPositionToBox(agent)
+        # TODO Some kind of corrective action?
+        # action_taken, correct_action = agent.take_action()
+        action_taken, correct_action = agent.take_action()
         # Sync position in case Unreal Agent hits a wall and cannot move
 
         env.display(ax)

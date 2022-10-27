@@ -57,7 +57,7 @@ class BoxEnv:
                     box.origin, box.width, box.height, box.angle_degrees, fill=None
                 )
             )
-        ax.set_xlim(self.xlim)
+        ax.set_xlim(self.xlim[::-1])
         ax.set_ylim(self.ylim)
         ax.set_aspect("equal")
 

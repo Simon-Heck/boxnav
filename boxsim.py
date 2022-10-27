@@ -14,8 +14,12 @@ from argparse import ArgumentParser
 
 # TODO: update to reflect OldenborgUE
 boxes = [
-    Box(Pt(-190, -350), Pt(-190, 1070), Pt(420, 1070), Pt(115, 1020)),
+    # Box(Pt(-190, -350), Pt(-190, 1070), Pt(420, 1070), Pt(115, 1020)),
     # Box(Pt(-365, 600), Pt(-450, 600), Pt(-190, 240), Pt(-700, 240)),
+    
+    # Box(Pt(480, -2550), Pt(480, 3070), Pt(-6520, 3070), Pt(0, 0)),
+    Box(Pt(-185, 1060), Pt(420, 1060), Pt(420, -350), Pt(10, 420)),
+    Box(Pt(-1110, 590), Pt(420, 590), Pt(420, 245), Pt(-770, 420)),
 ]
 
 
@@ -42,6 +46,7 @@ def simulate():
         agent = NavigatorUnrealWrapper(agent, 8500)
     # else:
     #     navUnrealWrapper = None
+    
     fig, ax = plt.subplots()
     camera = Camera(fig)
 
@@ -63,8 +68,10 @@ def simulate():
 
         env.display(ax)
         agent.display(ax, env.scale)
-        camera.snap()
 
+        if num_actions_taken % 10 = 0:
+            camera.snap()
+            
         num_actions_taken += 1
         if num_actions_taken >= max_actions_to_take:
             break
@@ -72,7 +79,7 @@ def simulate():
     print(
         f"Simulation complete, it took {num_actions_taken} actions to reach the end. Now creating output."
     )
-
+    
     anim = camera.animate()
     anim.save("output." + args.save_ext)
 

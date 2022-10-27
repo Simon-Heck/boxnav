@@ -134,7 +134,7 @@ class BoxNavigatorBase:
     def update_target_if_needed(self) -> None:
         """Switch to next target when close enough to current target."""
         surrounding_boxes = self.env.get_boxes(self.position)
-        if close_enough(self.position, self.target) and len(surrounding_boxes) > 1:
+        if close_enough(self.position, self.target, self.distance_threshold) and len(surrounding_boxes) > 1:
             self.target = surrounding_boxes[-1].target
 
     def move_forward(self) -> None:

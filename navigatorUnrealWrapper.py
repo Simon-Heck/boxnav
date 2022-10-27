@@ -29,7 +29,7 @@ class NavigatorUnrealWrapper:
     def syncRotation(self) -> None:
         """Sync Unreal's agent location to box navigator."""
         # Conversion from Box to unreal location is (180 - boxYaw) = unrealYaw
-        unrealYaw: float = 180 - degrees(self.navigator.rotation)
+        unrealYaw: float = degrees(self.navigator.rotation)
         self.ue5.setCameraYaw(unrealYaw, 0)
 
     def take_action(self) -> None:

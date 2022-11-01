@@ -51,11 +51,6 @@ def simulate():
 
     while not agent.at_final_target():
 
-        # if navUnrealWrapper is not None:
-        # if agent.isOutOfBounds:
-        #     navUnrealWrapper.syncBoxPositionToUnreal(agent)
-        # else:
-        #     navUnrealWrapper.syncUnrealPositionToBox(agent)
         # TODO Some kind of corrective action?
         # action_taken, correct_action = agent.take_action()
         action_taken, correct_action = agent.take_action()

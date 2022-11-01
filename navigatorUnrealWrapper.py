@@ -1,4 +1,6 @@
 from ue5env import UE5EnvWrapper
+import ue5env
+from UE5_Data_collector import UE5_data_collection
 from boxnavigator import Action, BoxNavigatorBase
 from math import degrees, radians
 from box import Box, Pt
@@ -9,8 +11,10 @@ class NavigatorUnrealWrapper:
     # this is a wrapper
 
     def __init__(self, navigator: BoxNavigatorBase, port: int = 8500) -> None:
+        self.experiment_name = "Test"
         self.ue5 = UE5EnvWrapper(port)
         self.navigator = navigator
+        self.UE5_data_collector = UE5_data_collection(self.ue5, self.experiment_name)
         self.syncUnrealPositionToBox()
         self.syncRotation()
 
@@ -43,7 +47,7 @@ class NavigatorUnrealWrapper:
             RuntimeError: If the action is not defined as Forward, Back, ROTATE_LEFT, or ROTATE_RIGHT.
         """
         action_taken, correct_action = self.navigator.take_action()
-
+        self.UE5_data_collector.collectData(action_taken)
         if action_taken == Action.FORWARD:
             self.ue5.forward(self.navigator.translation_increment)
         elif action_taken == Action.BACKWARD:

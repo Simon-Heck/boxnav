@@ -13,9 +13,32 @@ from argparse import ArgumentParser
 
 
 # TODO: update to reflect OldenborgUE
+# boxes = [
+#     # Box(Pt(-190, -350), Pt(-190, 1070), Pt(420, 1070), Pt(115, 1020)),
+#     # Box(Pt(-365, 600), Pt(-450, 600), Pt(-190, 240), Pt(-700, 240)),
+    
+#     # Box(Pt(480, -2550), Pt(480, 3070), Pt(-6520, 3070), Pt(0, 0)),
+#     Box(Pt(-185, 1060), Pt(420, 1060), Pt(420, -350), Pt(10, 420)),
+#     Box(Pt(-1110, 590), Pt(420, 590), Pt(420, 245), Pt(-770, 420)),
+#     Box(Pt(-855, -100), Pt(-855, 590), Pt(-700, 590), Pt(-780, 0)),
+#     Box(Pt(-700, 65), Pt(-700, -100), Pt(-4690, -100), Pt(-4500, -32)),
+#     Box(Pt(-4690, 65), Pt(-4415, 65), Pt(-4415, -2400), Pt(-4580, -2245)),
+#     Box(Pt(-4415, -2090), Pt(-4415, -2400), Pt(-5755, -2400), Pt(-5575, -2220)),
+#     Box(Pt(-5530, -2400), Pt(-5755, -2400), Pt(-5755, 2845), Pt(-5655, 1983)),
+#     # Box(Pt(-5755, 1680), Pt(-5755, -2350), Pt(-4600, 2350), Pt(-5000, 1983)),
+    
+# ]
+
+# route 2, uses path w/ waterfountain & stairs
 boxes = [
-    Box(Pt(-190, -350), Pt(-190, 1070), Pt(420, 1070), Pt(115, 1020)),
-    # Box(Pt(-365, 600), Pt(-450, 600), Pt(-190, 240), Pt(-700, 240)),
+    Box(Pt(-185, 1060), Pt(420, 1060), Pt(420, -350), Pt(10, 420)),
+    Box(Pt(-1110, 590), Pt(420, 590), Pt(420, 245), Pt(-770, 420)),
+    Box(Pt(-855, -100), Pt(-855, 590), Pt(-700, 590), Pt(-780, 0)),
+    Box(Pt(-700, 65), Pt(-700, -100), Pt(-4690, -100), Pt(-4500, -32)),
+    Box(Pt(-4690, 65), Pt(-4415, 65), Pt(-4415, -2400), Pt(-4570, -433)),
+    Box(Pt(-4415, -295), Pt(-4415, -640), Pt(-5755, -640), Pt(-5590, -450)),
+    Box(Pt(-5530, -2400), Pt(-5755, -2400), Pt(-5755, 2845), Pt(-5655, 1983)),
+    # Box(Pt(-5755, 1680), Pt(-5755, -2350), Pt(-4600, 2350), Pt(-5000, 1983)),
 ]
 
 
@@ -42,11 +65,12 @@ def simulate():
         agent = NavigatorUnrealWrapper(agent, 8500)
     # else:
     #     navUnrealWrapper = None
+    
     fig, ax = plt.subplots()
     camera = Camera(fig)
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 25
+    max_actions_to_take = 400
     num_actions_taken = 0
 
     while not agent.at_final_target():
@@ -56,10 +80,14 @@ def simulate():
         action_taken, correct_action = agent.take_action()
         # Sync position in case Unreal Agent hits a wall and cannot move
 
-        env.display(ax)
-        agent.display(ax, env.scale)
-        camera.snap()
 
+
+        if num_actions_taken % 10 == 0:
+            env.display(ax)
+            agent.display(ax, env.scale)
+            camera.snap()
+
+            
         num_actions_taken += 1
         if num_actions_taken >= max_actions_to_take:
             break
@@ -67,7 +95,7 @@ def simulate():
     print(
         f"Simulation complete, it took {num_actions_taken} actions to reach the end. Now creating output."
     )
-
+    
     anim = camera.animate()
     anim.save("output." + args.save_ext)
 

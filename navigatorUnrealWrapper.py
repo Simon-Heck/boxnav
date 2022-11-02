@@ -47,7 +47,7 @@ class NavigatorUnrealWrapper:
             RuntimeError: If the action is not defined as Forward, Back, ROTATE_LEFT, or ROTATE_RIGHT.
         """
         action_taken, correct_action = self.navigator.take_action()
-        self.UE5_data_collector.collectData(action_taken)
+        self.UE5_data_collector.collectData(correct_action)
         if action_taken == Action.FORWARD:
             self.ue5.forward(self.navigator.translation_increment)
         elif action_taken == Action.BACKWARD:

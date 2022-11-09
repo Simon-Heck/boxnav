@@ -66,8 +66,8 @@ class BoxNavigatorBase:
 
         # How much a navigator should translate or rotate in a given step
         # of the simulation. These are fairly arbitrary.
-        self.distance_threshold = 200
-        self.translation_increment = 200
+        self.distance_threshold = 50
+        self.translation_increment = 50
         self.rotation_increment = radians(5)
 
     def at_final_target(self) -> bool:
@@ -134,7 +134,10 @@ class BoxNavigatorBase:
     def update_target_if_needed(self) -> None:
         """Switch to next target when close enough to current target."""
         surrounding_boxes = self.env.get_boxes(self.position)
-        if close_enough(self.position, self.target, self.distance_threshold) and len(surrounding_boxes) > 1:
+        if (
+            close_enough(self.position, self.target, self.distance_threshold)
+            and len(surrounding_boxes) > 1
+        ):
             self.target = surrounding_boxes[-1].target
 
     def move_forward(self) -> None:
@@ -231,7 +234,7 @@ class WanderingNavigator(BoxNavigatorBase):
         ]
 
         # TODO: make this a parameter
-        self.chance_of_random_action = 0.5
+        self.chance_of_random_action = 0.15
 
     def navigator_specific_action(self) -> Action:
         # Take a random action some percent of the time

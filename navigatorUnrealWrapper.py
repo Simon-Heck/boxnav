@@ -69,3 +69,6 @@ class NavigatorUnrealWrapper:
 
     def display(self, ax, scale):
         return self.navigator.display(ax, scale)
+
+    def reset(self):
+        return self.ue5.reset()

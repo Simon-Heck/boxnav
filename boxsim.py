@@ -16,7 +16,7 @@ from argparse import ArgumentParser
 # boxes = [
 #     # Box(Pt(-190, -350), Pt(-190, 1070), Pt(420, 1070), Pt(115, 1020)),
 #     # Box(Pt(-365, 600), Pt(-450, 600), Pt(-190, 240), Pt(-700, 240)),
-    
+
 #     # Box(Pt(480, -2550), Pt(480, 3070), Pt(-6520, 3070), Pt(0, 0)),
 #     Box(Pt(-185, 1060), Pt(420, 1060), Pt(420, -350), Pt(10, 420)),
 #     Box(Pt(-1110, 590), Pt(420, 590), Pt(420, 245), Pt(-770, 420)),
@@ -26,7 +26,7 @@ from argparse import ArgumentParser
 #     Box(Pt(-4415, -2090), Pt(-4415, -2400), Pt(-5755, -2400), Pt(-5575, -2220)),
 #     Box(Pt(-5530, -2400), Pt(-5755, -2400), Pt(-5755, 2845), Pt(-5655, 1983)),
 #     # Box(Pt(-5755, 1680), Pt(-5755, -2350), Pt(-4600, 2350), Pt(-5000, 1983)),
-    
+
 # ]
 
 # route 2, uses path w/ waterfountain & stairs
@@ -63,14 +63,15 @@ def simulate():
 
     if args.ue:
         agent = NavigatorUnrealWrapper(agent, 8500)
+        agent.reset()
     # else:
     #     navUnrealWrapper = None
-    
+
     fig, ax = plt.subplots()
     camera = Camera(fig)
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 400
+    max_actions_to_take = 600
     num_actions_taken = 0
 
     while not agent.at_final_target():
@@ -80,14 +81,11 @@ def simulate():
         action_taken, correct_action = agent.take_action()
         # Sync position in case Unreal Agent hits a wall and cannot move
 
+        # if num_actions_taken % 10 == 0:
+        #     env.display(ax)
+        #     agent.display(ax, env.scale)
+        #     camera.snap()
 
-
-        if num_actions_taken % 10 == 0:
-            env.display(ax)
-            agent.display(ax, env.scale)
-            camera.snap()
-
-            
         num_actions_taken += 1
         if num_actions_taken >= max_actions_to_take:
             break
@@ -95,7 +93,7 @@ def simulate():
     print(
         f"Simulation complete, it took {num_actions_taken} actions to reach the end. Now creating output."
     )
-    
+
     anim = camera.animate()
     anim.save("output." + args.save_ext)
 
@@ -103,11 +101,12 @@ def simulate():
 argparser = ArgumentParser("Navigate around a box environment.")
 argparser.add_argument("save_ext", type=str, help="Extension for output format.")
 argparser.add_argument(
-    "--navigator", type=str, default="perfect", help="Navigator to use."
+    "--navigator", type=str, default="wandering", help="Navigator to use."
 )
 argparser.add_argument(
     "--ue", action="store_true", help="Navigate in Unreal Engine environment."
 )
 args = argparser.parse_args()
+for i in range(10):
+    simulate()
 
-simulate()

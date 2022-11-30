@@ -5,6 +5,7 @@ from ue5env import UE5EnvWrapper
 import shutil
 import random
 import os
+import time
 
 from boxnavigator import Action
 
@@ -21,35 +22,38 @@ class UE5_data_collection:
         num = str(random.random())
         num = num.split(".")
         imageName = f"{num[1]}"
-        datasetPath = (
-            f"C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/UE5Images/1stRun"
-        )
+        datasetPath = f"C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/UE5Images/2ndRunHighRes"
         try:
             os.mkdir(datasetPath)
         except OSError as error:
             print(error)
-
-        if action == Action.FORWARD:
-            self.path = self.env.save_image(0, self.image_extension)
-            shutil.move(
-                self.path, f"{datasetPath}/forward_{imageName}{self.image_extension}"
-            )
-        elif action == Action.BACKWARD:
-            self.path = self.env.save_image(0, self.image_extension)
-            shutil.move(
-                self.path, f"{datasetPath}/backward{imageName}{self.image_extension}"
-            )
-        elif action == Action.ROTATE_LEFT:
-            self.path = self.env.save_image(0, self.image_extension)
-            shutil.move(
-                self.path, f"{datasetPath}/right_{imageName}{self.image_extension}"
-            )
-        elif action == Action.ROTATE_RIGHT:
-            self.path = self.env.save_image(0, self.image_extension)
-            # Due to the inverted X axis, the rotate left action visually appears as a rotate right,
-            # hence why the image annotation here shows "left"
-            shutil.move(
-                self.path, f"{datasetPath}/left_{imageName}{self.image_extension}"
-            )
-        else:
+        try:
+            if action == Action.FORWARD:
+                self.path = self.env.save_image(0, self.image_extension)
+                shutil.move(
+                    self.path,
+                    f"{datasetPath}/forward_{imageName}{self.image_extension}",
+                )
+            elif action == Action.BACKWARD:
+                self.path = self.env.save_image(0, self.image_extension)
+                shutil.move(
+                    self.path,
+                    f"{datasetPath}/backward{imageName}{self.image_extension}",
+                )
+            elif action == Action.ROTATE_LEFT:
+                self.path = self.env.save_image(0, self.image_extension)
+                shutil.move(
+                    self.path, f"{datasetPath}/right_{imageName}{self.image_extension}"
+                )
+            elif action == Action.ROTATE_RIGHT:
+                self.path = self.env.save_image(0, self.image_extension)
+                # Due to the inverted X axis, the rotate left action visually appears as a rotate right,
+                # hence why the image annotation here shows "left"
+                shutil.move(
+                    self.path, f"{datasetPath}/left_{imageName}{self.image_extension}"
+                )
+            else:
+                return
+        except:
+            time.sleep(2)
             return

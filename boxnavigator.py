@@ -234,7 +234,7 @@ class WanderingNavigator(BoxNavigatorBase):
         ]
 
         # TODO: make this a parameter
-        self.chance_of_random_action = 0.15
+        self.chance_of_random_action = 0.25
 
     def navigator_specific_action(self) -> Action:
         # Take a random action some percent of the time

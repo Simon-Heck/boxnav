@@ -107,6 +107,6 @@ argparser.add_argument(
     "--ue", action="store_true", help="Navigate in Unreal Engine environment."
 )
 args = argparser.parse_args()
-for i in range(10):
+for i in range(100):
     simulate()
 

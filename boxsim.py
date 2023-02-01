@@ -69,6 +69,20 @@ def simulate():
         # TODO: some kind of corrective action?
         action_taken, correct_action = agent.take_action()
 
+        # if action_taken == Action.FORWARD:
+        #     ue5.forward(agent.translation_increment)
+        # else:
+        #     raise NotImplemented
+
+        # agent.update_position()
+
+        # TODO: use "correct_action" to label the image
+
+        env.display(ax)
+        agent.display(ax, env.scale)
+        ax.invert_xaxis()
+        camera.snap()
+
         num_actions_taken += 1
         if num_actions_taken >= max_actions_to_take:
             break
@@ -78,7 +92,7 @@ def simulate():
     )
 
     anim = camera.animate()
-    anim.save("output." + args.save_ext)
+    anim.save("output." + args.save_ext)  # type: ignore
 
 
 argparser = ArgumentParser("Navigate around a box environment.")

@@ -1,20 +1,32 @@
 from ue5env import UE5EnvWrapper
 import ue5env
-from UE5_Data_collector import UE5_data_collection
+import sys
 from boxnavigator import Action, BoxNavigatorBase
 from math import degrees, radians
 from box import Box, Pt
+
+sys.path.append(
+    "C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/OldenborgTraining/DataCollection"
+)
+from UE5_Data_collector import UE5_data_collection
 
 
 class NavigatorUnrealWrapper:
     # ue5: UE5EnvWrapper = None
     # this is a wrapper
 
-    def __init__(self, navigator: BoxNavigatorBase, port: int = 8500) -> None:
+    def __init__(
+        self, navigator: BoxNavigatorBase, port: int = 8500, collect_data: bool = False
+    ) -> None:
         self.experiment_name = "Test"
         self.ue5 = UE5EnvWrapper(port)
         self.navigator = navigator
-        self.UE5_data_collector = UE5_data_collection(self.ue5, self.experiment_name)
+        self.collect_data = collect_data
+        dataset_path = "C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/UE5Images/small_test_folder"
+        path_to_unreal_project_image = "C:/Users/simon/OneDrive/Documents/Unreal Projects/OldenborgUE/Saved/Screenshots/WindowsEditor/highres.png"
+        self.UE5_data_collector = UE5_data_collection(
+            self.ue5, self.experiment_name, dataset_path, path_to_unreal_project_image
+        )
         self.syncUnrealPositionToBox()
         self.syncRotation()
 
@@ -47,17 +59,17 @@ class NavigatorUnrealWrapper:
             RuntimeError: If the action is not defined as Forward, Back, ROTATE_LEFT, or ROTATE_RIGHT.
         """
         action_taken, correct_action = self.navigator.take_action()
-        self.UE5_data_collector.collectData(correct_action)
+        if self.collect_data:
+            self.UE5_data_collector.collectData(correct_action)
+
         if action_taken == Action.FORWARD:
             self.ue5.forward(self.navigator.translation_increment)
         elif action_taken == Action.BACKWARD:
             self.ue5.back(self.navigator.translation_increment)
         elif action_taken == Action.ROTATE_LEFT:
             self.syncRotation()
-            # self.ue5.left(degrees(navigator.rotation_increment))
         elif action_taken == Action.ROTATE_RIGHT:
             self.syncRotation()
-            # self.ue5.right(degrees(navigator.rotation_increment))
         else:
             raise RuntimeError(
                 f"Trying to perform an action that is undefined. Action# = {action_taken}"

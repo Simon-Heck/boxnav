@@ -168,7 +168,6 @@ class BoxNavigatorBase:
         else:
             self.isOutOfBounds = True
             # TODO: project to boundary?
-            # raise NotImplementedError("Projecting to boundary is not implemented.")
 
     def rotate_right(self) -> None:
         """Rotate to the right by a set amount."""

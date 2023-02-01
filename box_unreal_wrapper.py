@@ -10,10 +10,7 @@ sys.path.append(
 )
 from UE5_Data_collector import UE5_data_collection
 
-
 class NavigatorUnrealWrapper:
-    # ue5: UE5EnvWrapper = None
-    # this is a wrapper
 
     def __init__(
         self, navigator: BoxNavigatorBase, port: int = 8500, collect_data: bool = False

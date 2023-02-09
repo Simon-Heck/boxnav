@@ -36,6 +36,8 @@ boxes = [
 
 def simulate():
     """Create and update the box environment and run the navigator."""
+    path_to_dataset = "C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/UE5Images/small_test_folder"
+    path_to_unreal_project_image = "C:/Users/simon/OneDrive/Documents/Unreal Projects/OldenborgUE/Saved/Screenshots/WindowsEditor/highres.png"
     env = BoxEnv(boxes)
 
     agent_position = Pt(0, 0)
@@ -54,7 +56,13 @@ def simulate():
         raise ValueError("Invalid argument error (check code for options).")
 
     if args.ue:
-        agent = NavigatorUnrealWrapper(agent, port=8500, collect_data=args.collect)
+        agent = NavigatorUnrealWrapper(
+            agent,
+            path_to_dataset,
+            path_to_unreal_project_image,
+            port=8500,
+            collect_data=args.collect,
+        )
         agent.reset()
     # else:
     #     navUnrealWrapper = None

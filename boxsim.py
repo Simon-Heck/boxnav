@@ -1,5 +1,5 @@
 import math
-from box_unreal_wrapper import NavigatorUnrealWrapper
+from boxunrealwrapper import NavigatorUnrealWrapper
 from box import Box, Pt
 from boxenv import BoxEnv
 from boxnavigator import PerfectNavigator, WanderingNavigator, Action
@@ -73,7 +73,7 @@ def simulate():
     camera = Camera(fig)
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 600
+    max_actions_to_take = 5
     num_actions_taken = 0
     while not agent.at_final_target():
         # TODO: some kind of corrective action?

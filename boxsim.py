@@ -46,7 +46,11 @@ def simulate():
 
     if args.navigator == "wandering":
         agent = WanderingNavigator(
-            agent_position, agent_rotation, env, out_of_bounds=args.ue
+            agent_position,
+            agent_rotation,
+            env,
+            out_of_bounds=args.ue,
+            chance_of_random_action=0.25,
         )
     elif args.navigator == "perfect":
         agent = PerfectNavigator(
@@ -64,8 +68,6 @@ def simulate():
             collect_data=args.collect,
         )
         agent.reset()
-    # else:
-    #     navUnrealWrapper = None
 
     fig, ax = plt.subplots()
     camera = Camera(fig)

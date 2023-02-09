@@ -59,13 +59,14 @@ class BoxNavigatorBase:
 
         self.target = self.env.boxes[0].target
         # experimental:
-        self.isOutOfBounds = False
+        self.is_out_of_bound = False
 
         # TODO: change from wedge to field-of-view?
         self.half_target_wedge = radians(5)
 
         # How much a navigator should translate or rotate in a given step
         # of the simulation. These are fairly arbitrary.
+        # measured in centimeters
         self.distance_threshold = 50
         self.translation_increment = 50
         self.rotation_increment = radians(5)
@@ -164,9 +165,9 @@ class BoxNavigatorBase:
 
         if self.allow_out_of_bounds or self.env.get_boxes(new_pt):
             self.position = new_pt
-            self.isOutOfBounds = False
+            self.is_out_of_bound = False
         else:
-            self.isOutOfBounds = True
+            self.is_out_of_bound = True
             # TODO: project to boundary?
 
     def rotate_right(self) -> None:
@@ -223,7 +224,7 @@ class WanderingNavigator(BoxNavigatorBase):
     # TODO: rename this
 
     def __init__(
-        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool
+        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool, chance_of_random_action: float = 0.25
     ) -> None:
         super().__init__(position, rotation, env, out_of_bounds)
         self.possible_actions = [
@@ -232,8 +233,7 @@ class WanderingNavigator(BoxNavigatorBase):
             Action.ROTATE_RIGHT,
         ]
 
-        # TODO: make this a parameter
-        self.chance_of_random_action = 0.25
+        self.chance_of_random_action = chance_of_random_action
 
     def navigator_specific_action(self) -> Action:
         # Take a random action some percent of the time

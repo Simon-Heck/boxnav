@@ -5,23 +5,25 @@ from boxnavigator import Action, BoxNavigatorBase
 from math import degrees, radians
 from box import Box, Pt
 
-sys.path.append(
-    "C:/Users/simon/OneDrive/Documents/ArcsLab/ArcLabPrograms/OldenborgTraining/DataCollection"
-)
 # Defined in the Oldenborg Training Repository
-from UE5DataCollector import UE5DataCollection
+from UE5datacollector import UE5DataCollection
 
 
 class NavigatorUnrealWrapper:
     def __init__(
-        self, navigator: BoxNavigatorBase, dataset_path: str, path_to_unreal_project_image:str, port: int = 8500, collect_data: bool = False, 
+        self,
+        navigator: BoxNavigatorBase,
+        dataset_path: str,
+        path_to_unreal_project_image: str,
+        port: int = 8500,
+        collect_data: bool = False,
     ) -> None:
         self.ue5 = UE5EnvWrapper(port)
         self.navigator = navigator
         self.collect_data = collect_data
         self.dataset_path = dataset_path
         self.path_to_unreal_project_image = path_to_unreal_project_image
-        self.UE5_data_collector = UE5_data_collection(
+        self.UE5_data_collector = UE5DataCollection(
             self.ue5, dataset_path, path_to_unreal_project_image
         )
         self.syncUnrealPositionToBox()

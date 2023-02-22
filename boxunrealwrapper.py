@@ -31,21 +31,21 @@ class NavigatorUnrealWrapper:
 
     def sync_unreal_position_to_box(self) -> None:
         """Move Unreal Agent to match Boxsim Agent X and Y values"""
-        _, _, unrealZ = self.ue5.getCameraLocation(0)
+        _, _, unrealZ = self.ue5.get_camera_location(0)
         self.ue5.setCameraLocation(
             self.navigator.position.x, self.navigator.position.y, unrealZ
         )
 
     def sync_box_position_to_unreal(self) -> None:
         """Move Boxsim agent to match Unreal Agent Position"""
-        unrealX, unrealY, _ = self.ue5.getCameraLocation(0)
+        unrealX, unrealY, _ = self.ue5.get_camera_location(0)
         self.navigator.move(Pt(unrealX, unrealY))
 
     def sync_rotation(self) -> None:
         """Sync Unreal's agent location to box navigator."""
         # Conversion from Box to unreal location is (180 - boxYaw) = unrealYaw
         unrealYaw: float = degrees(self.navigator.rotation)
-        self.ue5.setCameraYaw(unrealYaw, 0)
+        self.ue5.set_camera_yaw(unrealYaw, 0)
 
     def take_action(self) -> None:
         """Performs the same action the box navigator performed but on the Unreal Agent.

@@ -26,22 +26,22 @@ class NavigatorUnrealWrapper:
         self.UE5_data_collector = UE5DataCollection(
             self.ue5, dataset_path, path_to_unreal_project_image
         )
-        self.syncUnrealPositionToBox()
-        self.syncRotation()
+        self.sync_unreal_position_to_box()
+        self.sync_rotation()
 
-    def syncUnrealPositionToBox(self) -> None:
+    def sync_unreal_position_to_box(self) -> None:
         """Move Unreal Agent to match Boxsim Agent X and Y values"""
         _, _, unrealZ = self.ue5.getCameraLocation(0)
         self.ue5.setCameraLocation(
             self.navigator.position.x, self.navigator.position.y, unrealZ
         )
 
-    def syncBoxPositionToUnreal(self) -> None:
+    def sync_box_position_to_unreal(self) -> None:
         """Move Boxsim agent to match Unreal Agent Position"""
         unrealX, unrealY, _ = self.ue5.getCameraLocation(0)
         self.navigator.move(Pt(unrealX, unrealY))
 
-    def syncRotation(self) -> None:
+    def sync_rotation(self) -> None:
         """Sync Unreal's agent location to box navigator."""
         # Conversion from Box to unreal location is (180 - boxYaw) = unrealYaw
         unrealYaw: float = degrees(self.navigator.rotation)
@@ -59,7 +59,7 @@ class NavigatorUnrealWrapper:
         """
         action_taken, correct_action = self.navigator.take_action()
         if self.collect_data:
-            self.UE5_data_collector.collectData(correct_action)
+            self.UE5_data_collector.collect_data(correct_action)
 
         if action_taken == Action.FORWARD:
             self.ue5.forward(self.navigator.translation_increment)

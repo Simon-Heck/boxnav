@@ -73,7 +73,7 @@ def simulate():
     camera = Camera(fig)
 
     # TODO: turn into CLI argument
-    max_actions_to_take = 5
+    max_actions_to_take = 20
     num_actions_taken = 0
     while not agent.at_final_target():
         # TODO: some kind of corrective action?
@@ -108,7 +108,7 @@ def simulate():
 argparser = ArgumentParser("Navigate around a box environment.")
 argparser.add_argument("save_ext", type=str, help="Extension for output format.")
 argparser.add_argument(
-    "--navigator", type=str, default="wandering", help="Navigator to use."
+    "--navigator", type=str, default="perfect", help="Navigator to use."
 )
 argparser.add_argument(
     "--ue", action="store_true", help="Navigate in Unreal Engine environment."

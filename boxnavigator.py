@@ -15,7 +15,7 @@ def close_enough(A: Pt, B: Pt, threshold: float = 1) -> bool:
     Args:
         A (Pt): First Pt to compare
         B (Pt): Second Pt to compare
-        threshold (float, optional): Distance to be considered close enough. Defaults to 1.
+        threshold (float, optional): max distance for being "close". Defaults to 1.
 
     Returns:
         bool: Is Pt A close enough to Pt B given a threshold
@@ -26,8 +26,6 @@ def close_enough(A: Pt, B: Pt, threshold: float = 1) -> bool:
 
 
 class Action(Enum):
-    """Simple class with 4 possible actions."""
-
     FORWARD = 0
     BACKWARD = 1
     ROTATE_LEFT = 2
@@ -128,7 +126,7 @@ class BoxNavigatorBase:
         Raises:
             NotImplemented: implement in child classes
         """
-        raise NotImplemented(
+        raise NotImplementedError(
             "This method should only be implemented in the inheriting classes."
         )
 
@@ -204,13 +202,6 @@ class PerfectNavigator(BoxNavigatorBase):
     def __init__(
         self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool
     ) -> None:
-        """Initialize navigator position, initial orientation, and associated Box environment.
-
-        Args:
-            position (Pt): Initial x,y Coordinate for navigator
-            rotation (float): Initial rotation of the navigator
-            env (BoxEnv): Box Environment navigator will operate in
-        """
         super().__init__(position, rotation, env, out_of_bounds)
 
     def navigator_specific_action(self) -> Action:
@@ -224,7 +215,12 @@ class WanderingNavigator(BoxNavigatorBase):
     # TODO: rename this
 
     def __init__(
-        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool, chance_of_random_action: float = 0.25
+        self,
+        position: Pt,
+        rotation: float,
+        env: BoxEnv,
+        out_of_bounds: bool,
+        chance_of_random_action: float = 0.25,
     ) -> None:
         super().__init__(position, rotation, env, out_of_bounds)
         self.possible_actions = [

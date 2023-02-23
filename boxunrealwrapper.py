@@ -1,9 +1,7 @@
 from ue5env import UE5EnvWrapper
-import ue5env
-import sys
 from boxnavigator import Action, BoxNavigatorBase
-from math import degrees, radians
-from box import Box, Pt
+from math import degrees
+from box import Pt
 
 # Defined in the Oldenborg Training Repository
 from UE5datacollector import UE5DataCollection
@@ -28,6 +26,7 @@ class NavigatorUnrealWrapper:
         )
         self.sync_unreal_position_to_box()
         self.sync_rotation()
+        self.reset()
 
     def sync_unreal_position_to_box(self) -> None:
         """Move Unreal Agent to match Boxsim Agent X and Y values"""

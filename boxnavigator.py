@@ -42,29 +42,33 @@ class BoxNavigatorBase:
     """
 
     def __init__(
-        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool
+        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool = False
     ) -> None:
         """Initialize member variables for any navigator.
 
         Args:
             position (Pt): initial position
-            rotation (float): initial rotation
+            rotation (float): initial rotation in radians
             env (BoxEnv): box environment
         """
         self.env = env
         self.position = position
         self.rotation = rotation
+
         self.allow_out_of_bounds = out_of_bounds
 
         self.target = self.env.boxes[0].target
+        # experimental:
+        self.is_out_of_bound = False
 
         # TODO: change from wedge to field-of-view?
         self.half_target_wedge = radians(5)
 
         # How much a navigator should translate or rotate in a given step
         # of the simulation. These are fairly arbitrary.
-        self.distance_threshold = 15
-        self.translation_increment = 10
+        # measured in centimeters
+        self.distance_threshold = 50
+        self.translation_increment = 50
         self.rotation_increment = radians(5)
 
     def at_final_target(self) -> bool:
@@ -110,24 +114,12 @@ class BoxNavigatorBase:
 
         if action_taken == Action.FORWARD:
             self.move_forward()
-            # self.sync_position_with_unreal()
-            # "vget /camera/0/location"
-            # update self.position
-            # TODO: only sync when it is possible that we went out of bounds?
-            # TODO: should we have a member parameter that turns syncing off?
-            #       because we probably won't need to with the perfect navigator
-
         elif action_taken == Action.ROTATE_LEFT:
             self.rotate_left()
         elif action_taken == Action.ROTATE_RIGHT:
             self.rotate_right()
         else:
             self.move_backward()
-            # self.sync_position_with_unreal()
-            # "vget /camera/0/location"
-            # update self.position
-
-        # Sync rotation every so many steps?
 
         return action_taken, correct_action
 
@@ -143,7 +135,10 @@ class BoxNavigatorBase:
     def update_target_if_needed(self) -> None:
         """Switch to next target when close enough to current target."""
         surrounding_boxes = self.env.get_boxes(self.position)
-        if close_enough(self.position, self.target) and len(surrounding_boxes) > 1:
+        if (
+            close_enough(self.position, self.target, self.distance_threshold)
+            and len(surrounding_boxes) > 1
+        ):
             self.target = surrounding_boxes[-1].target
 
     def move_forward(self) -> None:
@@ -170,9 +165,10 @@ class BoxNavigatorBase:
 
         if self.allow_out_of_bounds or self.env.get_boxes(new_pt):
             self.position = new_pt
+            self.is_out_of_bound = False
         else:
+            self.is_out_of_bound = True
             # TODO: project to boundary?
-            raise NotImplementedError("Projecting to boundary is not implemented.")
 
     def rotate_right(self) -> None:
         """Rotate to the right by a set amount."""
@@ -228,7 +224,7 @@ class WanderingNavigator(BoxNavigatorBase):
     # TODO: rename this
 
     def __init__(
-        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool
+        self, position: Pt, rotation: float, env: BoxEnv, out_of_bounds: bool, chance_of_random_action: float = 0.25
     ) -> None:
         super().__init__(position, rotation, env, out_of_bounds)
         self.possible_actions = [
@@ -237,8 +233,7 @@ class WanderingNavigator(BoxNavigatorBase):
             Action.ROTATE_RIGHT,
         ]
 
-        # TODO: make this a parameter
-        self.chance_of_random_action = 0.5
+        self.chance_of_random_action = chance_of_random_action
 
     def navigator_specific_action(self) -> Action:
         # Take a random action some percent of the time

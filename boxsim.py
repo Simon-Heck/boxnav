@@ -1,7 +1,7 @@
 import math
 from argparse import ArgumentParser, Namespace
 
-from boxunrealwrapper import NavigatorUnrealWrapper
+from boxunreal import UENavigatorWrapper
 from box import Box, Pt
 from boxenv import BoxEnv
 from boxnavigator import PerfectNavigator, WanderingNavigator
@@ -44,7 +44,7 @@ def simulate(args: Namespace, dataset_path: str, ue_image_path: str):
 
     # Wrap the agent in a UE wrapper if we're using UE
     if args.ue:
-        agent = NavigatorUnrealWrapper(
+        agent = UENavigatorWrapper(
             agent,
             dataset_path,
             ue_image_path,

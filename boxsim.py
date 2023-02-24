@@ -49,7 +49,7 @@ def simulate(args: Namespace, dataset_path: str, ue_image_path: str):
             dataset_path,
             ue_image_path,
             port=8500,
-            collect_data=args.collect,
+            save_images=args.collect,
         )
 
     fig, ax = plt.subplots()

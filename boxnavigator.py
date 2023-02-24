@@ -31,6 +31,9 @@ class Action(Enum):
     ROTATE_LEFT = 2
     ROTATE_RIGHT = 3
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class BoxNavigatorBase:
     """Base class for box navigators.

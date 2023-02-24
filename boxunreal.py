@@ -1,9 +1,9 @@
 from ue5env import UE5EnvWrapper
 from boxnavigator import Action, BoxNavigatorBase
-from math import degrees
 
-# Defined in the Oldenborg Training Repository
-from UE5datacollector import UE5DataCollection
+from math import degrees
+from pathlib import Path
+from time import sleep
 
 
 class UENavigatorWrapper:
@@ -15,21 +15,25 @@ class UENavigatorWrapper:
         dataset_path: str,
         ue_image_path: str,
         port: int = 8500,
-        collect_data: bool = False,
+        save_images: bool = False,
     ) -> None:
+
         self.ue5 = UE5EnvWrapper(port)
 
         self.navigator = navigator
-        self.dataset_path = dataset_path
-        self.ue_image_path = ue_image_path
-        self.collect_data = collect_data
-
-        self.image_collector = UE5DataCollection(self.ue5, dataset_path, ue_image_path)
+        self.dataset_path = Path(dataset_path)
+        self.ue_image_path = Path(ue_image_path)
+        self.save_images = save_images
 
         # Sync UE and boxsim
         self.sync_positions()
         self.sync_rotation()
         self.reset()
+
+        # Create the dataset directory if it doesn't exist
+        self.dataset_path.mkdir(parents=True, exist_ok=True)
+
+        self.images_saved = 0
 
     def at_final_target(self):
         return self.navigator.at_final_target()
@@ -73,8 +77,8 @@ class UENavigatorWrapper:
         """
 
         action_taken, correct_action = self.navigator.take_action()
-        if self.collect_data:
-            self.image_collector.collect_data(correct_action)
+        if self.save_images:
+            self.save_image(correct_action)
 
         if action_taken == Action.FORWARD:
             self.ue5.forward(self.navigator.translation_increment)
@@ -89,45 +93,26 @@ class UENavigatorWrapper:
 
         return action_taken, correct_action
 
-    def collect_data(self, action: Action):
-        # Generate unique file name, for now simply a float between 0 and 1 with the '0.' removed
-        num = str(random.random())
-        num = num.split(".")
-        image_name = f"{num[1]}"
-        try:
-            os.mkdir(self.dataset_path)
-        except OSError as error:
-            pass
-        try:
-            if action == Action.FORWARD:
-                self.env.save_image(0)
-                shutil.move(
-                    self.path_to_unreal_project_image,
-                    f"{self.dataset_path}/forward_{image_name}.png",
-                )
-            elif action == Action.BACKWARD:
-                self.env.save_image(0)
-                shutil.move(
-                    self.path_to_unreal_project_image,
-                    f"{self.dataset_path}/backward{image_name}.png",
-                )
-            elif action == Action.ROTATE_LEFT:
-                self.env.save_image(0)
-                shutil.move(
-                    self.path_to_unreal_project_image,
-                    f"{self.dataset_path}/right_{image_name}.png",
-                )
-            elif action == Action.ROTATE_RIGHT:
-                self.env.save_image(0)
-                # Due to the inverted X axis, the rotate left action visually appears as a rotate right,
-                # hence why the image annotation here shows "left"
-                shutil.move(
-                    self.path_to_unreal_project_image,
-                    f"{self.dataset_path}/left_{image_name}.png",
-                )
-            else:
-                return
-        except:
-            # in case shutil tries to move non existent file
-            time.sleep(2)
-            return
+    def save_image(self, action: Action) -> None:
+
+        # Rotations are swapped in UE
+        if action == Action.ROTATE_LEFT:
+            action = Action.ROTATE_RIGHT
+        elif action == Action.ROTATE_RIGHT:
+            action = Action.ROTATE_LEFT
+
+        # Generate the next filename
+        image_filepath = (
+            self.dataset_path / f"{self.images_saved:06}_{str(action).lower()}.png"
+        )
+        self.images_saved += 1
+
+        # Tell UE to save an image
+        self.ue5.save_image(0)
+
+        # Sleep to give time for the image to save
+        # TODO: maybe loop until the image exists?
+        sleep(2)
+
+        # Move the UE image to the dataset directory
+        self.ue_image_path.rename(image_filepath)

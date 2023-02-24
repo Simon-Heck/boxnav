@@ -31,6 +31,15 @@ class UENavigatorWrapper:
         self.sync_rotation()
         self.reset()
 
+    def at_final_target(self):
+        return self.navigator.at_final_target()
+
+    def display(self, ax, scale):
+        return self.navigator.display(ax, scale)
+
+    def reset(self):
+        return self.ue5.reset()
+
     def sync_positions(self) -> None:
         """Move UE agent to match boxsim agent."""
 
@@ -80,11 +89,45 @@ class UENavigatorWrapper:
 
         return action_taken, correct_action
 
-    def at_final_target(self):
-        return self.navigator.at_final_target()
-
-    def display(self, ax, scale):
-        return self.navigator.display(ax, scale)
-
-    def reset(self):
-        return self.ue5.reset()
+    def collect_data(self, action: Action):
+        # Generate unique file name, for now simply a float between 0 and 1 with the '0.' removed
+        num = str(random.random())
+        num = num.split(".")
+        image_name = f"{num[1]}"
+        try:
+            os.mkdir(self.dataset_path)
+        except OSError as error:
+            pass
+        try:
+            if action == Action.FORWARD:
+                self.env.save_image(0)
+                shutil.move(
+                    self.path_to_unreal_project_image,
+                    f"{self.dataset_path}/forward_{image_name}.png",
+                )
+            elif action == Action.BACKWARD:
+                self.env.save_image(0)
+                shutil.move(
+                    self.path_to_unreal_project_image,
+                    f"{self.dataset_path}/backward{image_name}.png",
+                )
+            elif action == Action.ROTATE_LEFT:
+                self.env.save_image(0)
+                shutil.move(
+                    self.path_to_unreal_project_image,
+                    f"{self.dataset_path}/right_{image_name}.png",
+                )
+            elif action == Action.ROTATE_RIGHT:
+                self.env.save_image(0)
+                # Due to the inverted X axis, the rotate left action visually appears as a rotate right,
+                # hence why the image annotation here shows "left"
+                shutil.move(
+                    self.path_to_unreal_project_image,
+                    f"{self.dataset_path}/left_{image_name}.png",
+                )
+            else:
+                return
+        except:
+            # in case shutil tries to move non existent file
+            time.sleep(2)
+            return
